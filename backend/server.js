@@ -60,7 +60,8 @@ app.use(errorHandler);
 // Files in /uploads will be lost on every redeploy or restart.
 // For production, use cloud storage like Supabase Storage or Cloudinary.
 const PORT = process.env.PORT || 5000;
-if (process.env.NODE_ENV !== 'production') {
+// Only skip app.listen if we are in a Vercel serverless environment
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🏥 Hospital MS Backend running on port ${PORT}`);
     console.log(`📡 API: http://localhost:${PORT}/api`);
