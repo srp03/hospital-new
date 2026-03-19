@@ -17,7 +17,3 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
-    disk:
-      name: uploads-storage
-      mountPath: /opt/render/project/src/backend/uploads
-      sizeGB: 1

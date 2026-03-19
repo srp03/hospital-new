@@ -56,6 +56,9 @@ app.get('/api/health', (req, res) => {
 // Error handler
 app.use(errorHandler);
 
+// NOTE: Render free tier does not support persistent disks. 
+// Files in /uploads will be lost on every redeploy or restart.
+// For production, use cloud storage like Supabase Storage or Cloudinary.
 const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
