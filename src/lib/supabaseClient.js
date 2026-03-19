@@ -13,7 +13,14 @@
  * This adapter mimics the exact same chaining API surface.
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || '';
+if (import.meta.env.PROD) {
+  console.log('🚀 HMS Production API URL:', API_URL || 'Using Relative Path');
+} else {
+  console.log('🛠️ HMS Development API URL:', API_URL || 'http://localhost:5000');
+}
+
+export { API_URL };
 
 // ============================================================
 // Token Management

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabaseClient'
+import { supabase, API_URL } from '../../lib/supabaseClient'
 import { Card } from '../../components/ui/Card'
 import { Badge, StatusBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -43,8 +43,7 @@ export default function LabCompletedReports() {
             const filename = path.split('/').pop();
             
             // Use the new reliable download route instead of supabase.storage
-            const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-            const downloadUrl = `${backendUrl}/api/lab-reports/download/${filename}`
+            const downloadUrl = `${API_URL || 'http://localhost:5000'}/api/lab-reports/download/${filename}`
 
             // Trigger browser download
             const link = document.createElement('a')
