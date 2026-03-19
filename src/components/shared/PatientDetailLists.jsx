@@ -13,9 +13,11 @@ export const VitalsList = React.memo(({ vitals, showForm, setShowForm, patientId
     <div className="h-full">
         <div className="flex justify-between items-center mb-4 sticky top-0 bg-white/90 backdrop-blur-[2px] z-10 py-1">
             <h4 className="font-medium">Vital Records</h4>
-            <Button size="sm" onClick={() => setShowForm(true)}>
-                + Add Vitals
-            </Button>
+            {recordedBy && (
+                <Button size="sm" onClick={() => setShowForm(true)}>
+                    + Add Vitals
+                </Button>
+            )}
         </div>
         {vitals.length > 0 ? (
             <div className="space-y-2 pr-2 custom-scrollbar pb-4">
@@ -56,9 +58,11 @@ export const PrescriptionList = React.memo(({ prescriptions, showForm, setShowFo
     <div className="h-full">
         <div className="flex justify-between items-center mb-4 sticky top-0 bg-white/90 backdrop-blur-[2px] z-10 py-1">
             <h4 className="font-medium">Prescriptions</h4>
-            <Button size="sm" onClick={() => setShowForm(true)}>
-                + New Prescription
-            </Button>
+            {doctorId && (
+                <Button size="sm" onClick={() => setShowForm(true)}>
+                    + New Prescription
+                </Button>
+            )}
         </div>
         {prescriptions.length > 0 ? (
             <div className="space-y-2 pr-2 custom-scrollbar pb-4">
@@ -107,9 +111,11 @@ export const LabList = React.memo(({ labRequests, showForm, setShowForm, patient
     <div className="h-full">
         <div className="flex justify-between items-center mb-4">
             <h4 className="font-medium">Lab Tests</h4>
-            <Button size="sm" onClick={() => setShowForm(true)}>
-                + Request Test
-            </Button>
+            {doctorId && (
+                <Button size="sm" onClick={() => setShowForm(true)}>
+                    + Request Test
+                </Button>
+            )}
         </div>
         {labRequests.length > 0 ? (
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">

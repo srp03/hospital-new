@@ -43,17 +43,26 @@ export default function PatientDetailView({ patient, doctorId, appointmentId, on
 
     const fetchPatientDetails = async () => {
         try {
-            const [vitalsRes, presRes, labRes, doctorRes] = await Promise.all([
+            const queries = [
                 supabase.from('vitals').select('*').eq('patient_id', patient.id).order('recorded_at', { ascending: false }).limit(50),
                 supabase.from('prescriptions').select('*').eq('patient_id', patient.id).order('created_at', { ascending: false }).limit(50),
-                supabase.from('lab_requests').select('*').eq('patient_id', patient.id).order('created_at', { ascending: false }).limit(50),
-                supabase.from('doctors').select('*').eq('id', doctorId).single()
-            ])
+                supabase.from('lab_requests').select('*').eq('patient_id', patient.id).order('created_at', { ascending: false }).limit(50)
+            ];
 
-            setVitals(vitalsRes.data || [])
-            setPrescriptions(presRes.data || [])
-            setLabRequests(labRes.data || [])
-            setDoctor(doctorRes.data)
+            // Only fetch doctor info if doctorId is provided
+            if (doctorId) {
+                queries.push(supabase.from('doctors').select('*').eq('id', doctorId).single());
+            }
+
+            const results = await Promise.all(queries);
+            
+            setVitals(results[0].data || [])
+            setPrescriptions(results[1].data || [])
+            setLabRequests(results[2].data || [])
+            
+            if (doctorId && results[3]) {
+                setDoctor(results[3].data)
+            }
         } catch (error) {
             console.error('Error:', error)
         } finally {

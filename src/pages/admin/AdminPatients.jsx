@@ -6,11 +6,15 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { LoadingTable } from '../../components/shared/LoadingSpinner'
 import { NoDataFound } from '../../components/shared/EmptyState'
+import { Modal } from '../../components/ui/Modal'
+import PatientDetailView from '../../components/shared/PatientDetailView'
 
 export default function AdminPatients() {
     const [patients, setPatients] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
+    const [selectedPatient, setSelectedPatient] = useState(null)
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         fetchPatients()
@@ -31,9 +35,14 @@ export default function AdminPatients() {
         }
     }
 
+    const openDetails = (patient) => {
+        setSelectedPatient(patient)
+        setShowModal(true)
+    }
+
     const filteredPatients = patients.filter(p =>
-        p.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.patient_uid.toLowerCase().includes(searchTerm.toLowerCase())
+        p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.patient_uid?.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     return (
@@ -70,7 +79,7 @@ export default function AdminPatients() {
                                         <td className="py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-bold">
-                                                    {p.full_name.charAt(0)}
+                                                    {p.full_name?.charAt(0)}
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-gray-900">{p.full_name}</p>
@@ -86,7 +95,13 @@ export default function AdminPatients() {
                                             </Badge>
                                         </td>
                                         <td className="py-4 text-right">
-                                            <Button variant="ghost" size="sm">View History</Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm"
+                                                onClick={() => openDetails(p)}
+                                            >
+                                                View History
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}
@@ -97,6 +112,20 @@ export default function AdminPatients() {
                     <NoDataFound type="patients" />
                 )}
             </Card>
+
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                title={`Patient Case: ${selectedPatient?.full_name}`}
+                size="lg"
+            >
+                {selectedPatient && (
+                    <PatientDetailView
+                        patient={selectedPatient}
+                        onClose={() => setShowModal(false)}
+                    />
+                )}
+            </Modal>
         </div>
     )
 }

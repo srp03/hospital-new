@@ -39,21 +39,23 @@ export default function LabCompletedReports() {
 
     const handleDownload = async (path, fileName) => {
         try {
-            const { data, error } = await supabase.storage
-                .from('lab-reports')
-                .download(path)
+            // Extract filename from the stored file_url (path)
+            const filename = path.split('/').pop();
+            
+            // Use the new reliable download route instead of supabase.storage
+            const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+            const downloadUrl = `${backendUrl}/api/lab-reports/download/${filename}`
 
-            if (error) throw error
-
-            const url = window.URL.createObjectURL(data)
+            // Trigger browser download
             const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', fileName)
+            link.href = downloadUrl
+            link.setAttribute('download', fileName || filename)
             document.body.appendChild(link)
             link.click()
             link.remove()
         } catch (error) {
             console.error('Download error:', error)
+            toast.error('Failed to download report')
         }
     }
 

@@ -57,20 +57,20 @@ export default function PatientLabReports() {
 
             toast.loading('Starting download...', { id: 'download' })
 
-            const { data, error } = await supabase.storage
-                .from('lab-reports')
-                .download(report.file_url)
+            // Extract filename from the stored file_url
+            const filename = report.file_url.split('/').pop()
+            
+            // Use the new reliable download route instead of supabase.storage
+            const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+            const downloadUrl = `${backendUrl}/api/lab-reports/download/${filename}`
 
-            if (error) throw error
-
-            const url = window.URL.createObjectURL(data)
+            // Trigger browser download
             const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', report.file_name || `report-${report.id}.pdf`)
+            link.href = downloadUrl
+            link.setAttribute('download', report.file_name || filename)
             document.body.appendChild(link)
             link.click()
             link.remove()
-            window.URL.revokeObjectURL(url)
 
             toast.success('Download complete', { id: 'download' })
         } catch (error) {

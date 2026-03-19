@@ -62,20 +62,14 @@ router.get('/download/:bucket/*', (req, res) => {
       return res.status(404).json({ error: { message: 'File not found' } });
     }
 
-    const stat = fs.statSync(fullPath);
-    const ext = path.extname(fullPath).toLowerCase();
-    const mimeTypes = {
-      '.pdf': 'application/pdf',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp',
-    };
-
-    res.setHeader('Content-Length', stat.size);
-    res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
-    fs.createReadStream(fullPath).pipe(res);
+    // Use res.download for a cleaner implementation that sets headers automatically
+    res.download(fullPath, path.basename(filePath), (err) => {
+      if (err) {
+        if (!res.headersSent) {
+          res.status(500).json({ error: { message: 'Failed to download file' } });
+        }
+      }
+    });
   } catch (error) {
     console.error('Download error:', error);
     res.status(500).json({ error: { message: error.message } });
