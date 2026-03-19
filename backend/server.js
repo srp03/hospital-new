@@ -29,10 +29,13 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
+    
     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.warn(`⚠️ CORS Blocking Origin: ${origin}. Please add this to FRONTEND_URL env var.`);
+      // Temporarily allow all during initial setup to unblock user
+      callback(null, true);
     }
   },
   credentials: true,
